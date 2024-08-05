@@ -1,0 +1,97 @@
+import matplotlib.pyplot as plt
+import seaborn as sns
+import plotly.graph_objs as go
+import numpy as np
+
+# Dados fictícios de focos de queimadas por estado na Amazônia
+estados = ['Mato Grosso', 'Roraima', 'Amazonas', 'Pará', 'Acre']
+meses = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai']
+focos_por_estado = np.array([
+    [1200, 900, 800, 700, 600],
+    [1100, 850, 750, 690, 590],
+    [1000, 800, 700, 680, 570],
+    [950, 780, 690, 670, 550],
+    [900, 750, 680, 660, 530]
+])
+
+# Dados fictícios de áreas desmatadas por estado na Amazônia (em km²)
+areas_desmatadas = np.array([3000, 1500, 2000, 1800, 1200])
+
+# Gráfico 1: Gráfico de Barras Empilhadas da Distribuição Mensal dos Focos de Queimadas
+fig1, ax1 = plt.subplots(figsize=(10, 6))
+
+for i, estado in enumerate(estados):
+    ax1.bar(meses, focos_por_estado[i], label=estado)
+
+ax1.set_xlabel('Mês')
+ax1.set_ylabel('Número de Focos')
+ax1.set_title('Distribuição Mensal dos Focos de Queimadas por Estado na Amazônia')
+ax1.legend()
+plt.tight_layout()
+
+# Descrição acima do gráfico de barras
+plt.figtext(0.5, 1, 'Distribuição mensal dos focos de queimadas por estado na Amazônia, mostrando variações ao longo dos meses.', ha='center', fontsize=10)
+
+# Descrição abaixo do gráfico de barras
+plt.figtext(0.5, -0.1, 'Este gráfico mostra a distribuição mensal dos focos de queimadas por estado na Amazônia, evidenciando variações ao longo dos meses.', ha='center', fontsize=10)
+
+plt.show()
+
+# Gráfico 2: Gráfico de Área Interativo da Evolução Mensal dos Focos de Queimadas
+fig2 = go.Figure()
+
+for i, estado in enumerate(estados):
+    fig2.add_trace(go.Scatter(
+        x=meses,
+        y=focos_por_estado[i],
+        mode='lines',
+        name=estado
+    ))
+
+fig2.update_layout(
+    title='Evolução Mensal dos Focos de Queimadas por Estado na Amazônia',
+    xaxis_title='Mês',
+    yaxis_title='Número de Focos',
+    template='plotly_dark'
+)
+
+fig2.show()
+
+# Gráfico 3: Gráfico de Dispersão da Relação entre Focos de Queimadas e Áreas Desmatadas
+fig3 = go.Figure()
+
+fig3.add_trace(go.Scatter(
+    x=areas_desmatadas,
+    y=np.sum(focos_por_estado, axis=1),
+    mode='markers',
+    marker=dict(size=15),
+    text=estados
+))
+
+fig3.update_layout(
+    title='Relação entre Focos de Queimadas e Áreas Desmatadas por Estado na Amazônia',
+    xaxis_title='Área Desmatada (km²)',
+    yaxis_title='Número Total de Focos de Queimadas',
+    template='plotly_dark'
+)
+
+fig3.show()
+
+# Gráfico 4: Gráfico de Funil para Comparar Causas de Focos de Queimadas
+causas = ['Desmatamento', 'Agricultura', 'Queima Controlada', 'Acidental']
+valores = [500, 300, 200, 100]
+
+fig4 = go.Figure(go.Funnel(
+    y=causas,
+    x=valores,
+    textinfo="value+percent initial"
+))
+
+fig4.update_layout(
+    title='Causas de Focos de Queimadas na Amazônia',
+    xaxis_title='Número de Focos',
+    yaxis_title='Causa',
+    template='plotly_dark'
+)
+
+fig4.show()
